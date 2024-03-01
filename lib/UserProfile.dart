@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-//import 'FriendsPopup.dart';
 import 'index.dart';
+
 class UserProfile extends StatefulWidget {
   @override
   _UserProfileState createState() => _UserProfileState();
 }
+
 class _UserProfileState extends State<UserProfile> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final databaseReference = FirebaseDatabase.instance.ref();
@@ -18,12 +19,14 @@ class _UserProfileState extends State<UserProfile> {
   String university = '';
   String course = '';
   List<Map<String, String>> friendsDetails = [];
+  bool isEditingBio = false;
 
   @override
   void initState() {
     super.initState();
     fetchUserData();
   }
+
   Future<void> fetchUserData() async {
     User? user = _auth.currentUser;
     if (user != null) {
@@ -45,6 +48,7 @@ class _UserProfileState extends State<UserProfile> {
       }
     }
   }
+
   Future<void> fetchFriendsDetails(Map<dynamic, dynamic> friendsIds) async {
     List<Map<String, String>> fetchedFriendsDetails = [];
     for (String friendId in friendsIds.keys) {
@@ -147,11 +151,30 @@ class _UserProfileState extends State<UserProfile> {
                   Row(
                     children: [
                       Expanded(
-                        child: Text(bio),
+                        child: isEditingBio
+                            ? TextField(
+                          controller: TextEditingController(text: bio),
+                          onChanged: (value) => bio = value,
+                          autofocus: true,
+                          decoration: InputDecoration(
+                            hintText: "Edit your bio",
+                            border: InputBorder.none,
+                          ),
+                        )
+                            : Text(bio),
                       ),
                       IconButton(
-                        icon: Icon(Icons.edit),
+                        icon: Icon(isEditingBio ? Icons.check : Icons.edit),
                         onPressed: () {
+                          if (isEditingBio) {
+                            final user = _auth.currentUser;
+                            if (user != null) {
+                              databaseReference.child('Users/${user.uid}/bio').set(bio);
+                            }
+                          }
+                          setState(() {
+                            isEditingBio = !isEditingBio;
+                          });
                         },
                       ),
                     ],
@@ -165,9 +188,11 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 }
+
 class ProfileInfoBox extends StatelessWidget {
   final String title;
   final String subtitle;
+
   ProfileInfoBox({required this.title, required this.subtitle});
 
   @override
