@@ -1,7 +1,4 @@
-// import all lib files
-
 export 'ChangePassword.dart';
-export 'EditProfile.dart';
 export 'firebase_options.dart';
 export 'Forums.dart';
 export 'HomeScreen.dart';
