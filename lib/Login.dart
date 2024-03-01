@@ -65,8 +65,6 @@ class _LoginState extends State<Login> {
     }
   }
 
-
-
   void _resetPassword() async {
     final email = _emailOrUsernameController.text.trim();
     if (email.isEmpty || !email.contains('@')) {
