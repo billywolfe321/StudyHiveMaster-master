@@ -78,11 +78,6 @@ class Setting extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             buildSettingItem(
-              title: "Edit Profile",
-              icon: Icons.account_circle,
-              onTap: () => navigateToPage(context, EditProfile()),
-            ),
-            buildSettingItem(
               title: "Change Password",
               icon: Icons.vpn_key,
               onTap: () => navigateToPage(context, ChangePassword()),
